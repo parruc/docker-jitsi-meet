@@ -52,12 +52,16 @@ VirtualHost "{{ .Env.XMPP_DOMAIN }}"
         "ping";
         "speakerstats";
         "conference_duration";
+        {{ if .Env.TURN_ENABLE | default "0" | toBool }}
+        "turncredentials";
+        {{end}}
         {{ if .Env.XMPP_MODULES }}
         "{{ join "\";\n\"" (splitList "," .Env.XMPP_MODULES) }}";
         {{ end }}
         {{ if and $ENABLE_AUTH (eq $AUTH_TYPE "ldap") }}
         "auth_cyrus";
         {{end}}
+ 
     }
 
     speakerstats_component = "speakerstats.{{ .Env.XMPP_DOMAIN }}"

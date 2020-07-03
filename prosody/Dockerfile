@@ -47,12 +47,17 @@ RUN \
     && apt-cleanup \
     && rm -rf /tmp/pkg /var/cache/apt
 
-RUN patch -d /usr/lib/prosody/modules/muc -p0 < /prosody-plugins/muc_owner_allow_kick.patch
 
 COPY rootfs/ /
 
 COPY --from=builder /usr/local/lib/lua /usr/local/lib/lua
 COPY --from=builder /usr/local/share/lua /usr/local/share/lua
+
+ADD https://raw.githubusercontent.com/netaskd/mod_turncredentials/master/mod_turncredentials.lua /prosody-plugins/mod_turncredentials.lua
+
+RUN \
+    sed -i s/hook/hook_global/g /prosody-plugins/mod_auth_token.lua \
+    && patch -d /usr/lib/prosody/modules/muc -p0 < /prosody-plugins/muc_owner_allow_kick.patch
 
 EXPOSE 5222 5347 5280
 
