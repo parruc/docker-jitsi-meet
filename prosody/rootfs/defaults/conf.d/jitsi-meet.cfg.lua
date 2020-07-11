@@ -7,6 +7,9 @@ plugin_paths = { "/prosody-plugins/", "/prosody-plugins-custom" }
 http_default_host = "{{ .Env.XMPP_DOMAIN }}"
 
 {{ $ENABLE_AUTH := .Env.ENABLE_AUTH | default "0" | toBool }}
+{{ $TURN_ENABLE := .Env.TURN_ENABLE | default "0" | toBool }}
+{{ $TURN_PORT := .Env.TURN_PORT | default "5349" }}
+{{ $TURN_HOST := .Env.TURN_HOST | default .Env.DOCKER_HOST_ADDRESS }}
 {{ $AUTH_TYPE := .Env.AUTH_TYPE | default "internal" }}
 {{ $JWT_ASAP_KEYSERVER := .Env.JWT_ASAP_KEYSERVER | default "" }}
 {{ $JWT_ALLOW_EMPTY := .Env.JWT_ALLOW_EMPTY | default "0" | toBool }}
@@ -52,7 +55,7 @@ VirtualHost "{{ .Env.XMPP_DOMAIN }}"
         "ping";
         "speakerstats";
         "conference_duration";
-        {{ if .Env.TURN_ENABLE | default "0" | toBool }}
+        {{ if $TURN_ENABLE }}
         "turncredentials";
         {{end}}
         {{ if .Env.XMPP_MODULES }}
@@ -63,6 +66,17 @@ VirtualHost "{{ .Env.XMPP_DOMAIN }}"
         {{end}}
  
     }
+
+    {{ if $TURN_ENABLE }}
+    turncredentials_secret = "{{ .Env.TURN_SECRET | default "keepthissecret" }}";
+    turncredentials_port = {{ $TURN_PORT }} ;
+    turncredentials_ttl = 86400;
+    turncredentials = {
+        { type = "stun", host = "{{ $TURN_HOST }}" },
+        { type = "turn", host = "{{ $TURN_HOST }}", port = {{ $TURN_PORT }} },
+        { type = "turns", host = "{{ $TURN_HOST }}", port = {{ $TURN_PORT }}, transport = "tcp" }
+}
+{{end}}
 
     speakerstats_component = "speakerstats.{{ .Env.XMPP_DOMAIN }}"
     conference_duration_component = "conferenceduration.{{ .Env.XMPP_DOMAIN }}"

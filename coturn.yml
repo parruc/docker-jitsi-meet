@@ -4,6 +4,9 @@ services:
     # coturn TURN server project
     turn:
         image: jitsi/coturn
+        build:
+            context: coturn
+            dockerfile: Dockerfile
         restart: always
         volumes:
             - ${CONFIG}/turn:/config
