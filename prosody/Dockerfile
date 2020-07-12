@@ -47,7 +47,6 @@ RUN \
     && apt-cleanup \
     && rm -rf /tmp/pkg /var/cache/apt
 
-
 COPY rootfs/ /
 
 COPY --from=builder /usr/local/lib/lua /usr/local/lib/lua
