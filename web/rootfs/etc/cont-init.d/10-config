@@ -119,6 +119,7 @@ if [[ ! -f /config/config.js ]]; then
         sed -i \
              -e "s#// useStunTurn:.*,#useStunTurn: true,#" \
              /config/config.js
+    	tpl /defaults/modules-enabled/50-turn-stream.conf > /config/nginx/modules-enabled/50-turn-stream.conf
     fi
 
 fi

@@ -1,5 +1,9 @@
 server {
 	listen 80 default_server;
+    	location ^~ /.well-known/acme-challenge/ {
+        	default_type "text/plain";
+        	root /var/www/certbot/;
+	}
 
 	{{ if .Env.ENABLE_HTTP_REDIRECT | default "0" | toBool }}
 	return 301 https://$host$request_uri;

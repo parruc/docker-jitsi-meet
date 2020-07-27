@@ -30,7 +30,7 @@ turnserver -n ${TURN_ADMIN_OPTIONS} \
 --pkey=/config/cert.key \
 --min-port=${TURN_RTP_MIN:-10000} \
 --max-port=${TURN_RTP_MAX:-11000} \
---no-stun \
+#--no-stun \
 --use-auth-secret \
 --static-auth-secret=${TURN_SECRET:-keepthissecret} \
 --no-multicast-peers \
